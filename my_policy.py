@@ -41,4 +41,40 @@ class MyPolicy(CribbagePolicy):
         ]
 
 
-                                    
+    
+        
+    def keep(self, hand, scores, am_dealer):
+        arg_max = float('-inf')
+        throws = []
+
+
+        for p1, p2 in itertools.combinations(hand, 2):
+            remaining_hand = [card for card in hand if not (card == p1 or card == p2)]
+
+            h_crib = self._my_crib[p1.rank() - 1][p2.rank() - 1] if am_dealer else self._opp_crib[p1.rank() - 1][p2.rank() - 1]
+            h_hand = scoring.score(self._policy._game, remaining_hand, None, False)[0]
+
+            if am_dealer:
+                if h_hand + h_crib == arg_max:
+                    throws.append([p1, p2])
+                elif h_hand + h_crib > arg_max:
+                    throws = [[p1, p2]]
+                    arg_max = h_hand + h_crib
+            else:
+                if h_hand - h_crib == arg_max:
+                    throws.append([p1, p2])
+                elif h_hand - h_crib > arg_max:
+                    throws = [[p1, p2]]
+                    arg_max = h_hand - h_crib
+
+        rand_idx = 0
+        if len(throws) > 1:
+            rand_idx = random.randint(0, len(throws) - 1)
+
+        throw = throws[rand_idx]
+        keep = [card for card in hand if not (card == throw[0] or card == throw[1])]
+
+        # return self._policy.keep(hand, scores, am_dealer)
+        return keep, throw
+
+
