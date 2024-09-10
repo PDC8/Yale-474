@@ -78,3 +78,75 @@ class MyPolicy(CribbagePolicy):
         return keep, throw
 
 
+    def peg(self, cards, history, turn, scores, am_dealer):
+        #return the card to play
+        random.shuffle(cards)
+        print("cards", cards)
+        print("total", history.total_points())
+        best_card = None
+        best_score = None
+        for card in cards:
+            score = history.score(self._policy._game, card, 0 if am_dealer else 1)
+            if score is not None and (best_score is None or score > best_score):
+                best_score = score
+                best_card = card
+
+        low_cards = []
+        two_sum = []
+        difference = defaultdict(list) #rank_value, card
+        if best_score is None or best_score < 1:
+            if history.is_start_round():
+                for card in cards:
+                    if card.rank() < 5: #cards less than 4
+                        low_cards.append(card)
+                    if card.rank() >= 5 and (card.rank() != 5 and min(card.rank(), 10) != 10): #large cards that aren't 5 or 10 but sum to 15
+                        diff = 15 - min(card.rank(), 10)
+                        if card.rank() in difference:
+                            for c in difference[card.rank()]:
+                                two_sum.append([card, c])
+                        difference[diff].append(card)
+
+                print("two_sum", two_sum)
+                if low_cards: #we have low_cards play it
+                    print("low_cards", low_cards[0])
+                    return low_cards[0] #since we shuffled earlier this is random
+                elif two_sum: #if we don't have low_cards but have card pair that sum to 15 play it
+                    print("two_sum", two_sum[0][0])
+                    return two_sum[0][0] #since we shuffled earlier this is random 
+                else: #play greedy best_card
+                    print("start_best_greedy", best_card)
+                    return best_card
+
+
+
+
+            else: #make total >= 22 or close to 31 as possible
+                close_to_31 = None
+                largest = None
+                for card in cards:
+                    if 22 <= min(card.rank(), 10) + history.total_points() < 31: #just have to do less than bc. if equal to 31 best_score != None or 0
+                        if close_to_31 is None:
+                            close_to_31 = card
+                            largest = card.rank()
+                        else:
+                            if card.rank() > largest:
+                                close_to_31 = card
+                                largest = card.rank()
+                if close_to_31 is None: #no card sums to >= 22 or close to 31. Play greedy card
+                    print("end_greedy", best_card)
+                    return best_card
+                else: #play card that sums closest to 31
+                    print("close", close_to_31)
+                    return close_to_31
+        else:
+            print("best", best_card)
+            return best_card
+
+            #comments
+        return self._policy.peg(cards, history, turn, scores, am_dealer)
+
+
+
+    
+
+                                    
