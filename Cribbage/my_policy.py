@@ -81,8 +81,8 @@ class MyPolicy(CribbagePolicy):
     def peg(self, cards, history, turn, scores, am_dealer):
         #return the card to play
         random.shuffle(cards)
-        print("cards", cards)
-        print("total", history.total_points())
+        # print("cards", cards)
+        # print("total", history.total_points())
         best_card = None
         best_score = None
         for card in cards:
@@ -106,15 +106,15 @@ class MyPolicy(CribbagePolicy):
                                 two_sum.append([card, c])
                         difference[diff].append(card)
 
-                print("two_sum", two_sum)
+                # print("two_sum", two_sum)
                 if low_cards: #we have low_cards play it
-                    print("low_cards", low_cards[0])
+                    # print("low_cards", low_cards[0])
                     return low_cards[0] #since we shuffled earlier this is random
                 elif two_sum: #if we don't have low_cards but have card pair that sum to 15 play it
-                    print("two_sum", two_sum[0][0])
+                    # print("two_sum", two_sum[0][0])
                     return two_sum[0][0] #since we shuffled earlier this is random 
                 else: #play greedy best_card
-                    print("start_best_greedy", best_card)
+                    # print("start_best_greedy", best_card)
                     return best_card
 
 
@@ -133,17 +133,17 @@ class MyPolicy(CribbagePolicy):
                                 close_to_31 = card
                                 largest = card.rank()
                 if close_to_31 is None: #no card sums to >= 22 or close to 31. Play greedy card
-                    print("end_greedy", best_card)
+                    # print("end_greedy", best_card)
                     return best_card
                 else: #play card that sums closest to 31
-                    print("close", close_to_31)
+                    # print("close", close_to_31)
                     return close_to_31
         else:
-            print("best", best_card)
+            # print("best", best_card)
             return best_card
 
-            #comments
-        return self._policy.peg(cards, history, turn, scores, am_dealer)
+    
+        # return self._policy.peg(cards, history, turn, scores, am_dealer)
 
 
 
