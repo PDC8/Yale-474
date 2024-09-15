@@ -8,7 +8,7 @@ from cribbage import Game, evaluate_policies
 from my_policy import MyPolicy
 
 if __name__ == "__main__":
-    games = 1000000
+    games = 10000
     run_time = 0
     if len(sys.argv) > 1:
         if sys.argv[1] == "--time":
@@ -26,7 +26,6 @@ if __name__ == "__main__":
     results = {value: 0 for value in match_values}
     start_time = time.time()
     while total_games == 0 or time.time() - start_time < run_time:
-        print("HI")
         batch_results = evaluate_policies(game, submission, benchmark, games)
         total_games += games
         for v in batch_results[3]:

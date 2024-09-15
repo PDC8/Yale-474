@@ -1,6 +1,7 @@
 from cribbage import Game
+from deck import Card
 import scoring
-
+import random
 import csv
 
 class Table:
@@ -16,21 +17,26 @@ class Table:
     
     def compute_vP(self, n, rank1, rank2, am_dealer):
         total_score = 0
-        for i in range(n):
+        for _ in range(n):
             deck = self.game.deck() #new deck
             crib = []
-            #shuffle it to randomly remove the first 2 cards with the same rank as the rank pair we chose
-            deck.shuffle()
-            for c in deck._cards:
-                if rank1 == c._rank:
-                    crib.append(c)
-                    deck.remove([c])
-                    break
-            for c in deck._cards:
-                if rank2 == c._rank:
-                    crib.append(c)
-                    deck.remove([c])
-                    break
+            suits = ['C', 'D', 'H', 'S']
+            suit1, suit2 = None, None
+            if rank1 == rank2:
+                suit1 = suits[random.randint(0, 3)]
+                suits.remove(suit1)
+                suit2 = suits[random.randint(0, 2)] 
+
+            else:
+                suit1 = suits[random.randint(0, 3)]
+                suit2 = suits[random.randint(0, 3)]
+        
+            c1 = Card(rank1, suit1)
+            c2 = Card(rank2, suit2)
+
+            deck.remove([c1])
+            deck.remove([c2])
+
             deck.shuffle()
             opp_hand = deck.deal(6) # deal 6 cards for opp's hand 
             deck.shuffle()
@@ -52,7 +58,7 @@ class Table:
 
 if __name__ == "__main__":
     table = Table()
-    table.generate_table(100000, False) #True for my_crib, False for opp_crib
+    table.generate_table(1000000, True) #True for my_crib, False for opp_crib
     print(table.get_table())
     with open('output1.csv', 'w', newline='') as file:
         writer = csv.writer(file)
