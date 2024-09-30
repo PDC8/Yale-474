@@ -8,7 +8,7 @@ from cribbage import Game, evaluate_policies
 from my_policy import MyPolicy
 
 if __name__ == "__main__":
-    games = 10000
+    games = 100000
     run_time = 0
     if len(sys.argv) > 1:
         if sys.argv[1] == "--time":
