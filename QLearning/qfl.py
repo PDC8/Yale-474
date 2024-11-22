@@ -22,16 +22,16 @@ def q_learn(model, time_limit):
         progress_per_play = downs_left / yards_to_first_down
         x, y = None, None
 
-        if progress_per_time <= 2: #3.3
+        if progress_per_time < 2.5: #2
             x = 2
-        elif progress_per_time >= 3.6: #4.0
+        elif progress_per_time >= 5.0: #3.6
             x = 0
         else:
             x = 1
 
-        if progress_per_play <= 0.39:
+        if progress_per_play < 0.25: #.39
             y = 0
-        elif progress_per_play >= .5:
+        elif progress_per_play >= .5: #.5
             y = 2
         else:
             y = 1
@@ -87,6 +87,7 @@ def q_learn(model, time_limit):
     def policy_function(state):
         cell = get_bin(state)
         return max(Q[cell], key=Q[cell].get, default=random.randint(0, model.offensive_playbook_size() - 1)) 
+    # print(max(visit_counts.values()) / min(visit_counts.values()))
     return policy_function
 
 
